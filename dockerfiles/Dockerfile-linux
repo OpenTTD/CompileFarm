@@ -8,11 +8,6 @@ LABEL \
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /workdir/source
-
-ENTRYPOINT ["release.sh"]
-CMD ["dev"]
-
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
 	build-essential \
 	debhelper \
@@ -31,4 +26,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 	zlib1g-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ADD release.sh /usr/bin/
+COPY release.sh /usr/bin/
+
+WORKDIR /workdir/source
+
+ENTRYPOINT ["release.sh"]
+CMD ["dev"]
