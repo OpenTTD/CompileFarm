@@ -17,11 +17,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 	build-essential \
 	doxygen \
 	gawk \
+	ghostscript \
 	git \
 	mercurial \
 	patch \
 	rsync \
 	subversion \
+	texlive \
 	zip \
 	&& rm -rf /var/lib/apt/lists/*
 
