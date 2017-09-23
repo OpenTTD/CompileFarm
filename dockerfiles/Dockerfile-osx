@@ -26,17 +26,23 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN cd / && git clone https://github.com/tpoechtrager/osxcross.git
-RUN apt-get update && cd /osxcross && tools/get_dependencies.sh && apt-get install -y --no-install-recommends cmake && rm -rf /var/lib/apt/lists/*
-RUN cd /osxcross/tarballs && wget @OSXSDKURL@/osx-sdk/MacOSX@RELEASE@.sdk.tar.xz
+RUN apt-get update \
+	&& cd /osxcross \
+	&& tools/get_dependencies.sh \
+	&& apt-get install -y --no-install-recommends cmake \
+	&& rm -rf /var/lib/apt/lists/*
+RUN cd /osxcross/tarballs \
+	&& wget @OSXSDKURL@/osx-sdk/MacOSX@RELEASE@.sdk.tar.xz
 
 # osxcross-macports expects --i386 for i386, and otherwise nothing.
 # It overwrites ARCH.
 # This is hard to create in a Dockerfile, so we modify the file a bit to make it easier for us.
 RUN sed -i 's/ARCH="x86_64"//' /osxcross/tools/osxcross-macports
 
-RUN cd /osxcross && OSX_VERSION_MIN=@RELEASE@ UNATTENDED=1 ./build.sh
-# Fix up permissions of SDK; it is extracted with the uid/gid of the tar
-RUN chown -R root:root /osxcross/target/SDK && find /osxcross/target/SDK -type d -exec chmod 755 {} \;
+# Build osxcross, and fix up permissions of the SDK; this has to be done in one step, as AUFS otherwise fails to allow non-root to read the SDK
+RUN cd /osxcross && OSX_VERSION_MIN=@RELEASE@ UNATTENDED=1 ./build.sh \
+	&& chown -R root:root /osxcross/target/SDK \
+	&& find /osxcross/target/SDK -type d -exec chmod 0755 {} \;
 
 # Only OSX 10.7+ supports compiler-RT; currently fails to compile
 #RUN cd /osxcross && if [ "@RELEASE@" != "10.6" ]; then ./build_compiler_rt.sh; fi
