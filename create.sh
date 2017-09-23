@@ -78,4 +78,3 @@ release=""
 create noarch
 
 docker image prune -f
-

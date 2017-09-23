@@ -31,4 +31,3 @@ ln -sf os/debian debian && mkdir -p bundles
 fakeroot make -f debian/rules binary
 mv ../*dbg*.deb bundles/${BASENAME}-linux-${OS}-${OS_RELEASE}-${ARCH}-dbg.deb
 mv ../*.deb bundles/${BASENAME}-linux-${OS}-${OS_RELEASE}-${ARCH}.deb
-

@@ -17,4 +17,3 @@ cp -r source build/$1/
 docker run --rm --user=`id -u`:`id -g` --mount type=bind,src=$(realpath build/$1),target=/workdir openttd-cf:$1
 
 cp build/$1/source/bundles/* bundles/
-

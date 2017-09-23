@@ -35,4 +35,3 @@ echo ""
 LDFLAGS="-lbz2" ./configure --host=@ARCH@-apple-${DARWIN} --pkg-config=@ARCH@-apple-${DARWIN}-pkg-config
 make
 make bundle_zip BUNDLE_NAME=${BASENAME}-macosx-${OS_RELEASE}-${ARCH}
-
