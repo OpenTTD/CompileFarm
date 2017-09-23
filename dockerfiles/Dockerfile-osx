@@ -35,6 +35,9 @@ RUN cd /osxcross/tarballs && wget @OSXSDKURL@/osx-sdk/MacOSX@RELEASE@.sdk.tar.xz
 RUN sed -i 's/ARCH="x86_64"//' /osxcross/tools/osxcross-macports
 
 RUN cd /osxcross && OSX_VERSION_MIN=@RELEASE@ UNATTENDED=1 ./build.sh
+# Fix up permissions of SDK; it is extracted with the uid/gid of the tar
+RUN chown -R root:root /osxcross/target/SDK && find /osxcross/target/SDK -type d -exec chmod 755 {} \;
+
 # Only OSX 10.7+ supports compiler-RT; currently fails to compile
 #RUN cd /osxcross && if [ "@RELEASE@" != "10.6" ]; then ./build_compiler_rt.sh; fi
 
