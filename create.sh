@@ -35,7 +35,7 @@ function create {
 	fi
 
 	mkdir -p $d
-	cat Dockerfile-${1} | sed "s/@OS@/${os}/g;s/@RELEASE@/${release}/g;s/@ARCH@/${arch}/g;s#@TAG@#${tag}#g;s#@OSXSDKURL#${OSXSDKURL}#g" > $d/Dockerfile
+	cat Dockerfile-${1} | sed "s/@OS@/${os}/g;s/@RELEASE@/${release}/g;s/@ARCH@/${arch}/g;s#@TAG@#${tag}#g;s#@OSXSDKURL@#${OSXSDKURL}#g" > $d/Dockerfile
 	cat release-${1}.sh | sed "s/@OS@/${os}/g;s/@RELEASE@/${release}/g;s/@ARCH@/${arch}/g;s#@TAG@#${tag}#g" > $d/release.sh
 	chmod +x $d/release.sh
 
