@@ -1,15 +1,20 @@
 #!/bin/bash -ex
 
-mkdir -p binaries
-rm -f binaries/*
+if [ -z "$1" ]; then
+	set +x
+	echo "Usage: $0 openttd-cf-image"
+	echo "Example:"
+	echo "  $0 debian-stretch-amd64"
+	exit 1
+fi
 
-for c in generated/*; do
-	rm -rf $c/workdir
-	mkdir -p $c/workdir
-	cp -r source $c/workdir/source
-	docker run --user=`id -u`:`id -g` --mount type=bind,src=$(realpath $c/workdir),target=/workdir openttd-cf:$(basename ${c})
-	cp $c/workdir/source/bundles/* binaries
-done
+mkdir -p bundles
 
-docker container prune -f
+rm -rf build/$1
+mkdir -p build/$1
+cp -r source build/$1/
+
+docker run --rm --user=`id -u`:`id -g` --mount type=bind,src=$(realpath build/$1),target=/workdir openttd-cf:$1
+
+cp build/$1/source/bundles/* bundles/
 

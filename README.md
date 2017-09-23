@@ -19,7 +19,26 @@ around for that if you are interested.
 
 ## Running
 
-Run `./build.sh` to build all the binaries for all the images you just
-created. If you want to build one specific binary, look in that file to see
-how to do that.
+To create a single binary, run:
+
+```
+./build.sh debian-stretch-amd64
+```
+
+If you want to know all valid images on your system, run:
+
+```
+docker images openttd-cf --format "{{.Tag}}"
+```
+
+Of course this heavily depend on what docker images you produced in the
+installation step.
+
+To create all binaries for all known images, run:
+
+```
+./build-all.sh
+```
+
+Resulting binaries will always be in `bundles/`.
 
