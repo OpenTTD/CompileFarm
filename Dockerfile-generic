@@ -1,0 +1,42 @@
+FROM @TAG@:@RELEASE@
+
+LABEL \
+	org.label-schema.description="OpenTTD Compile-Farm image to produce binaries for specific target" \
+	org.label-schema.schema-version="1.0" \
+	org.label-schema.url="https://www.openttd.org/" \
+	org.label-schema.vendor=OpenTTD
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /workdir/source
+
+ENTRYPOINT ["release.sh"]
+CMD ["dev"]
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+	build-essential \
+	debhelper \
+	fakeroot \
+	git \
+	libfile-fcntllock-perl \
+	libfontconfig-dev \
+	libicu-dev \
+	liblzma-dev \
+	liblzo2-dev \
+	libsdl1.2-dev \
+	libxdg-basedir-dev \
+	mercurial \
+	patch \
+	subversion \
+	zlib1g-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN cd /usr/lib/*-linux-gnu \
+	&& ln -s libiculx.a libsiculx.a \
+	&& ln -s libicule.a libsicule.a \
+	&& ln -s libicuuc.a libsicuuc.a \
+	&& ln -s libicudata.a libsicudata.a \
+	&& ln -s libicui18n.a libsicui18n.a \
+	&& rm liblzo2*.so*
+
+ADD release.sh /usr/bin/
