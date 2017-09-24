@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM @TAG@
 
 LABEL \
 	org.label-schema.description="OpenTTD Compile-Farm image to produce source bundles and documentation" \

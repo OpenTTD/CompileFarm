@@ -1,4 +1,4 @@
-FROM @TAG@:@RELEASE@
+FROM @TAG@
 
 LABEL \
 	org.label-schema.description="OpenTTD Compile-Farm image to produce binaries for specific target" \
