@@ -23,25 +23,27 @@ function create {
 		cname="${os}-${cname}"
 	fi
 
-	if [ "${os}" = "generic" ]; then
-		os="debian"
-		release="stretch"
+	d="generated/$cname"
+
+	if [ "$1" = "linux" ]; then
+		# Names of docker images can be prefixed with 'i386'; 'amd64' is implied, so left out
+		if [ "${arch}" = "amd64" ]; then
+			tag="${os}:${release}"
+		else
+			tag="${arch}/${os}:${release}"
+		fi
+	else
+		# All our other images run on debian stretch
+		tag="debian:stretch"
 	fi
 
-	d="generated/$cname"
-	tag="${arch}/${os}"
-	if [ "${arch}" = "amd64" ]; then
-		tag="${os}"
-	fi
+	docker pull ${tag}
 
 	mkdir -p $d
 	cat dockerfiles/Dockerfile-${1} | sed "s/@OS@/${os}/g;s/@RELEASE@/${release}/g;s/@ARCH@/${arch}/g;s#@TAG@#${tag}#g;s#@OSXSDKURL@#${OSXSDKURL}#g" > $d/Dockerfile
 	cat dockerfiles/release-${1}.sh | sed "s/@OS@/${os}/g;s/@RELEASE@/${release}/g;s/@ARCH@/${arch}/g;s#@TAG@#${tag}#g" > $d/release.sh
 	chmod +x $d/release.sh
 
-	if [ "$1" = "linux" ]; then
-		docker pull ${tag}:${release}
-	fi
 	docker build ${rebuild} -t openttd-cf:${cname} $d
 }
 
