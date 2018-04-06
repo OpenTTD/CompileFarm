@@ -1,44 +1,82 @@
-# OpenTTD-CF
+# OpenTTD-docker-cf
 
-This repository contains Docker files to produce binary for OpenTTD.
+A collection of Dockerfiles which are prepared to compile OpenTTD in all kind
+of flavours.
 
-They are the Docker files as used by OpenTTD to produce binaries for releases,
-nightlies, experimental branches, etc.
+The images created from these Dockerfiles are used by the Compile Farm of
+OpenTTD to produce all the official releases since 1.9.0. This includes
+binaries like nightlies, experimentals, release-candidates, forks, etc.
 
-Windows binaries are not produced via Docker, and as such not part of this
-repository.
+## Requirements
 
-## Installation
+Install the latest Docker CE. At least 17.05 is needed.
 
-Run `./create.sh` to start building all the images. You will have to enter
-a `OSXSDKURL` if you want to build OSX images, or use the value `IGNORE` if
-you like to skip them.
+## Building
 
-The SDK can be created in various of ways if you have access to a Mac; google
-around for that if you are interested.
+The images are created by Docker Hub Automated Builds, and can be found
+under:
 
-## Running
+https://hub.docker.com/r/openttd/compile-farm/
 
-To create a single binary, run:
+They can simply be pulled like:
 
 ```
-./build.sh debian-stretch-amd64
+docker pull openttd-cf:debian-stretch-amd64
 ```
 
-If you want to know all valid images on your system, run:
+If you want to build them yourself, simply run 'make' in the root directory.
+This will produce all the images. More specific targets are available; check
+the Makefile for more details.
+
+## Running (releases)
+
+To compile your source via a Docker, simply create a new directory, say
+'build', and put in there a folder called 'source' with the source you would
+like to compile. The Docker will put some temporary files in the 'build'
+folder, but mostly it will work inside the 'source' folder.
+
+Now run from your build folder:
+
+```
+docker run --rm --user=`id -u`:`id -g` -v $(realpath $(pwd)):/workdir openttd-cf:<your flavor>
+```
+
+This will produce the resulting binaries in the bundles directory of your
+source directory. Depending on the target, this can be a zip, deb, ..
+
+## Running (CI)
+
+The dockers marked 'ci' are meant for code validation and tests
+(like regression-check). These don't produce any binaries, but only validate
+that the new code is correct. It follows the above chapter exactly, with a few
+key differences:
+
+ - The image name is not 'openttd-cf', but 'openttd-cf-ci'.
+ - When running the docker, it doesn't produce any output in bundles folder.
+
+## Listing current images
+
+To list all the images you currently have on your system, simply run:
 
 ```
 docker images openttd-cf --format "{{.Tag}}"
 ```
 
-Of course this heavily depend on what docker images you produced in the
-installation step.
-
-To create all binaries for all known images, run:
+Or for all the CI images:
 
 ```
-./build-all.sh
+docker images openttd-cf-ci --format "{{.Tag}}"
 ```
 
-Resulting binaries will always be in `bundles/`.
+## Targets
+
+In this repository you see different folders, each for their own target.
+
+A short walkthrough:
+
+ - linux-ci: targets that only validate sources on errors.
+ - linux-deb: targets that produce .deb files (Debian and Ubuntu).
+ - linux-generic: targets that produce tarballs (for any Linux OS).
+ - noarch: targets that produce source tarballs and documentation.
+ - osx: targets that produce .zip files to work on Mac OS X.
 
