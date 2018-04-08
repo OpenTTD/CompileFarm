@@ -3,19 +3,19 @@
 set -e
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 <version>"
-	exit 1
+    echo "Usage: $0 <version>"
+    exit 1
 fi
 
 VERSION=$1
 BASENAME="openttd-${VERSION}"
 
 if [ -e "/etc/os-release" ]; then
-	OS="debian"
-	OS_RELEASE=`cat /etc/os-release | awk -F"[)(]+" '/VERSION=/ {print $2}'`
+    OS="debian"
+    OS_RELEASE=`cat /etc/os-release | awk -F"[)(]+" '/VERSION=/ {print $2}'`
 else
-	OS="ubuntu"
-	OS_RELEASE=`cat /etc/lsb-release | awk -F= '/DISTRIB_CODENAME=/ {print $2}'`
+    OS="ubuntu"
+    OS_RELEASE=`cat /etc/lsb-release | awk -F= '/DISTRIB_CODENAME=/ {print $2}'`
 fi
 
 ARCH=`dpkg --print-architecture`

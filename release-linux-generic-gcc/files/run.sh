@@ -3,8 +3,8 @@
 set -e
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 <version>"
-	exit 1
+    echo "Usage: $0 <version>"
+    exit 1
 fi
 
 VERSION=$1
