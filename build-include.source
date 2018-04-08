@@ -2,7 +2,7 @@
 DEFAULT_DISTRO=debian
 DEFAULT_DISTRO_TAG=stretch
 
-build() {
+build_linux() {
     local pwd=$1
     local distro=$2
     local distro_tag=$3

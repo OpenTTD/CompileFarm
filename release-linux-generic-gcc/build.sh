@@ -23,7 +23,7 @@ build_target() {
         distro="${arch}/${distro}"
     fi
 
-    build $(dirname $0) ${distro} ${DEFAULT_DISTRO_TAG} ${image_name}
+    build_linux $(dirname $0) ${distro} ${DEFAULT_DISTRO_TAG} ${image_name}
 }
 
 read_targets ${base_image_name}
