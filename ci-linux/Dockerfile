@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openttd-opengfx \
     && rm -rf /var/lib/apt/lists/*
 
+RUN echo ${EXTRA_PACKAGES} > /etc/compiler-packages
 COPY files/run.sh /usr/bin/
 
 WORKDIR /workdir/source

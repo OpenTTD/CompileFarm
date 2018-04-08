@@ -21,15 +21,15 @@ build_target() {
 
     local arch=${target}
 
-    local distro=${DEFAULT_DISTRO}
+    . $(dirname $0)/compilers/${compiler}.inc
+
+    local distro=${DISTRO}
 
     if [ "${arch}" != "amd64" ]; then
         distro="${arch}/${distro}"
     fi
 
-    package_list=$(cat $(dirname $0)/compilers/${compiler}.packages)
-
-    build $(dirname $0) ${distro} ${DEFAULT_DISTRO_TAG} ${image_name} "${package_list}"
+    build $(dirname $0) ${distro} ${DISTRO_TAG} ${image_name} "${EXTRA_PACKAGES}"
 }
 
 read_targets ${base_image_name}
