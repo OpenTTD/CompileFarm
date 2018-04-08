@@ -1,14 +1,19 @@
 ARG DISTRO=debian
-ARG BASE_IMAGE=stretch
-FROM ${DISTRO}:${BASE_IMAGE}
+ARG DISTRO_TAG=stretch
+FROM ${DISTRO}:${DISTRO_TAG}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Blocks in this file are created as such that we have as many cache hits as
+# possible between different Dockerfiles
+
+# Dependencies needed to compile OpenTTD
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
 	apt-get install -y --no-install-recommends \
 	\
-	build-essential \
+	bzip2 \
 	git \
+    libc6-dev \
 	libfile-fcntllock-perl \
 	libfontconfig-dev \
 	libicu-dev \
@@ -16,12 +21,15 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
 	liblzo2-dev \
 	libsdl1.2-dev \
 	libxdg-basedir-dev \
-	mercurial \
-	patch \
-	subversion \
+    make \
+    mercurial \
+    subversion \
+    tar \
+    xz-utils \
 	zlib1g-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Fox up some files so OpenTTD picks up the right files
 RUN cd /usr/lib/*-linux-gnu \
 	&& ln -s libiculx.a libsiculx.a \
 	&& ln -s libicule.a libsicule.a \
@@ -30,21 +38,29 @@ RUN cd /usr/lib/*-linux-gnu \
 	&& ln -s libicui18n.a libsicui18n.a \
 	&& rm liblzo2*.so*
 
-# We split this apart to increase Docker cache hits, reducing total image size
+# Compiler used in this Docker
+RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
+	apt-get install -y --no-install-recommends \
+    \
+    binutils \
+    g++ \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
+# Install openttd-opengfx, so we can run regression
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	openttd-opengfx \
 	&& rm -rf /var/lib/apt/lists/*
 
 LABEL \
-	maintainer info@openttd.org \
-	org.label-schema.description="OpenTTD Compile-Farm image to validate source for errors" \
+	maintainer="info@openttd.org" \
+	org.label-schema.description="OpenTTD Compile-Farm image to validate source for errors (GCC)" \
 	org.label-schema.schema-version="1.0" \
 	org.label-schema.url="https://www.openttd.org/" \
 	org.label-schema.vcs-url="https://github.com/OpenTTD/OpenTTD-CF" \
 	org.label-schema.vendor=OpenTTD
 
-COPY run.sh /usr/bin/
+COPY files/run.sh /usr/bin/
 
 WORKDIR /workdir/source
 

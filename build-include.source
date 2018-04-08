@@ -1,0 +1,29 @@
+# This is where all our Dockers are based on if they are generic 'linux'
+DEFAULT_DISTRO=debian
+DEFAULT_DISTRO_TAG=stretch-slim
+
+build() {
+    local pwd=$1
+    local distro=$2
+    local distro_tag=$3
+    local image_name=$4
+
+    echo "Building docker image based on ${distro}:${distro_tag} as ${image_name} .."
+
+    docker build \
+        --pull \
+        --build-arg DISTRO=${distro} \
+        --build-arg DISTRO_TAG=${distro_tag} \
+        -t ${image_name} \
+        ${pwd}
+}
+
+read_targets() {
+    local image_name=$1
+
+    cat $(dirname $0)/targets | while read target; do
+        if [ -n "${target}" ] && [ "$(echo ${target} | cut -b1)" != "#" ]; then
+            build_target ${image_name} ${target}
+        fi
+    done
+}

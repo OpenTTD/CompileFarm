@@ -13,15 +13,16 @@ Install the latest Docker CE. At least 17.05 is needed.
 
 ## Building
 
-The images are created by Docker Hub Automated Builds, and can be found
-under:
+The images are created and published on Docker Hub, and can be found under:
 
 https://hub.docker.com/r/openttd/compile-farm/
+https://hub.docker.com/r/openttd/compile-farm-ci/
 
 They can simply be pulled like:
 
 ```
-docker pull openttd-cf:debian-stretch-amd64
+docker pull openttd/compile-farm:linux-debian-stretch-amd64-gcc
+docker pull openttd/compile-farm-ci:linux-amd64-gcc
 ```
 
 If you want to build them yourself, simply run 'make' in the root directory.
@@ -38,7 +39,7 @@ folder, but mostly it will work inside the 'source' folder.
 Now run from your build folder:
 
 ```
-docker run --rm --user=`id -u`:`id -g` -v $(realpath $(pwd)):/workdir openttd-cf:<your flavor>
+docker run --rm --user=`id -u`:`id -g` -v $(realpath $(pwd)):/workdir openttd/compile-farm:<your flavor>
 ```
 
 This will produce the resulting binaries in the bundles directory of your
@@ -51,7 +52,7 @@ The dockers marked 'ci' are meant for code validation and tests
 that the new code is correct. It follows the above chapter exactly, with a few
 key differences:
 
- - The image name is not 'openttd-cf', but 'openttd-cf-ci'.
+ - The image name is not 'openttd/compile-farm', but 'openttd/compile-farm-ci'.
  - When running the docker, it doesn't produce any output in bundles folder.
 
 ## Listing current images
@@ -59,13 +60,13 @@ key differences:
 To list all the images you currently have on your system, simply run:
 
 ```
-docker images openttd-cf --format "{{.Tag}}"
+docker images openttd/compile-farm --format "{{.Tag}}"
 ```
 
 Or for all the CI images:
 
 ```
-docker images openttd-cf-ci --format "{{.Tag}}"
+docker images openttd/compile-farm-ci --format "{{.Tag}}"
 ```
 
 ## Targets
@@ -74,9 +75,7 @@ In this repository you see different folders, each for their own target.
 
 A short walkthrough:
 
- - linux-ci: targets that only validate sources on errors.
- - linux-deb: targets that produce .deb files (Debian and Ubuntu).
- - linux-generic: targets that produce tarballs (for any Linux OS).
- - noarch: targets that produce source tarballs and documentation.
- - osx: targets that produce .zip files to work on Mac OS X.
-
+ - ci-linux-clang: targets that only validate sources on errors (with CLang).
+ - ci-linux-gcc: targets that only validate sources on errors (with GCC).
+ - release-linux-deb-gcc: targets that produce .deb files (Debian and Ubuntu).
+ - release-linux-generic-gcc: targets that produce tarballs (for any Linux OS, with GCC).

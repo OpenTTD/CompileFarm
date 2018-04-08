@@ -16,6 +16,7 @@ echo ""
 echo "Creating .deb file"
 echo "  Source: ${BASENAME}"
 echo "  OS: Linux"
+echo "  Compiler: GCC"
 echo "  Arch: ${ARCH}"
 echo ""
 
