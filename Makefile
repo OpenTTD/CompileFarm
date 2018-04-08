@@ -1,5 +1,6 @@
 CI =
 CI += ci-linux
+CI += ci-commit-checker
 
 RELEASE =
 RELEASE += release-linux-deb-gcc

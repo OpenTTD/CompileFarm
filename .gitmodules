@@ -1,0 +1,3 @@
+[submodule "ci-commit-checker"]
+	path = ci-commit-checker/git-hooks
+	url = https://github.com/OpenTTD/OpenTTD-git-hooks
