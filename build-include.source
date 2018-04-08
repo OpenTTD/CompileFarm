@@ -1,0 +1,60 @@
+# This is where all our Dockers are based on if they are generic 'linux'
+DEFAULT_DISTRO=debian
+DEFAULT_DISTRO_TAG=stretch
+
+build_linux() {
+    local pwd=$1
+    local distro=$2
+    local distro_tag=$3
+    local image_name=$4
+    local extra_packages="$5"
+
+    # Debian has "slim" images, which are drastically smaller
+    if [ "${distro}" = "debian" ] || [ "${distro}" = "i386/debian" ]; then
+        distro_tag="${distro_tag}-slim"
+    fi
+
+    # Sanitize, as Docker doesn't like / in tags
+    local sdistro=$(echo ${distro} | sed 's@/@-@')
+
+    # We do this to deduplicate large parts of Dockerfiles
+    echo ""
+    echo "Building docker base image based on ${distro}:${distro_tag} .."
+    echo ""
+    docker build \
+        --pull \
+        --build-arg DISTRO=${distro} \
+        --build-arg DISTRO_TAG=${distro_tag} \
+        -t openttd/base:${sdistro}-${distro_tag} \
+        $(dirname $0)/../base-linux
+
+    echo ""
+    echo "Building docker image ${image_name} .."
+    echo ""
+
+    if [ -n "${extra_packages}" ]; then
+        docker build \
+            --build-arg DISTRO=${sdistro} \
+            --build-arg DISTRO_TAG=${distro_tag} \
+            --build-arg EXTRA_PACKAGES="${extra_packages}" \
+            -t ${image_name} \
+            ${pwd}
+    else
+        docker build \
+            --build-arg DISTRO=${sdistro} \
+            --build-arg DISTRO_TAG=${distro_tag} \
+            ${extra_packages} \
+            -t ${image_name} \
+            ${pwd}
+    fi
+}
+
+read_targets() {
+    local image_name=$1
+
+    cat $(dirname $0)/targets | while read target; do
+        if [ -n "${target}" ] && [ "$(echo ${target} | cut -b1)" != "#" ]; then
+            build_target ${image_name} ${target}
+        fi
+    done
+}

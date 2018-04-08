@@ -1,3 +1,0 @@
-# This is where all our Dockers are based on if they are generic 'linux'
-DISTRO=debian
-BASE_IMAGE=stretch

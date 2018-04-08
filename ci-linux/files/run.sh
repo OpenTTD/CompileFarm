@@ -7,6 +7,7 @@ ARCH=`dpkg --print-architecture`
 echo ""
 echo "Validating source"
 echo "  OS: Linux"
+echo "  Compiler: $(cat /etc/compiler-packages)"
 echo "  Arch: ${ARCH}"
 echo ""
 
