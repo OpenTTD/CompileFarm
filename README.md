@@ -1,4 +1,4 @@
-# OpenTTD-docker-cf
+# OpenTTD-cf
 
 A collection of Dockerfiles which are prepared to compile OpenTTD in all kind
 of flavours.
