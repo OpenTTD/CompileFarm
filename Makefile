@@ -1,6 +1,5 @@
 CI =
-CI += ci-linux-clang
-CI += ci-linux-gcc
+CI += ci-linux
 
 RELEASE =
 RELEASE += release-linux-deb-gcc

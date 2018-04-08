@@ -75,7 +75,6 @@ In this repository you see different folders, each for their own target.
 
 A short walkthrough:
 
- - ci-linux-clang: targets that only validate sources on errors (with CLang).
- - ci-linux-gcc: targets that only validate sources on errors (with GCC).
+ - ci-linux: targets that only validate sources on errors.
  - release-linux-deb-gcc: targets that produce .deb files (Debian and Ubuntu).
  - release-linux-generic-gcc: targets that produce tarballs (for any Linux OS, with GCC).

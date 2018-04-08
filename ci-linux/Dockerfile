@@ -2,19 +2,17 @@ ARG DISTRO=debian
 ARG DISTRO_TAG=stretch-slim
 FROM openttd/base:${DISTRO}-${DISTRO_TAG}
 
-# Compiler used in this Docker
+# Extra packages needed for this Docker
+ARG EXTRA_PACKAGES
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
     \
-    binutils \
-    g++ \
-    gcc \
+    ${EXTRA_PACKAGES} \
     && rm -rf /var/lib/apt/lists/*
 
-# Dependencies needed to create deb files
+# Install openttd-opengfx, so we can run regression
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    debhelper \
-    fakeroot \
+    openttd-opengfx \
     && rm -rf /var/lib/apt/lists/*
 
 COPY files/run.sh /usr/bin/
@@ -22,4 +20,4 @@ COPY files/run.sh /usr/bin/
 WORKDIR /workdir/source
 
 ENTRYPOINT ["run.sh"]
-CMD ["dev"]
+CMD []

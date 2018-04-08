@@ -24,10 +24,6 @@ build_target() {
 
     local arch=${target}
 
-    # Debian has "slim" images, which are drastically smaller
-    if [ "${distro}" = "debian" ]; then
-        distro_tag="${distro_tag}-slim"
-    fi
     if [ "${arch}" != "amd64" ]; then
         distro="${arch}/${distro}"
     fi

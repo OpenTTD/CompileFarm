@@ -14,16 +14,22 @@ build_target() {
     local image_name=$1
     local target=$2
 
-    local image_name="${image_name}:linux-${target}-gcc"
+    local compiler=${target%-*}
+    target=${target##*-}
+
+    local image_name="${image_name}:linux-${target}-${compiler}"
+
+    local arch=${target}
 
     local distro=${DEFAULT_DISTRO}
-    local arch=${target}
 
     if [ "${arch}" != "amd64" ]; then
         distro="${arch}/${distro}"
     fi
 
-    build $(dirname $0) ${distro} ${DEFAULT_DISTRO_TAG} ${image_name}
+    package_list=$(cat $(dirname $0)/compilers/${compiler}.packages)
+
+    build $(dirname $0) ${distro} ${DEFAULT_DISTRO_TAG} ${image_name} "${package_list}"
 }
 
 read_targets ${base_image_name}
