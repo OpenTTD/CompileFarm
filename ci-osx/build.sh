@@ -14,11 +14,11 @@ build_target() {
     local image_name=$1
     local target=$2
 
-    local arch=${target}
+    local osx_version=${target}
 
-    local image_name="${image_name}:linux-generic-${arch}-gcc"
+    local image_name="${image_name}:osx-${osx_version}"
 
-    build_linux ${arch} ${DEFAULT_DISTRO} ${DEFAULT_DISTRO_TAG} ${image_name}
+    build_osx "10.13" ${image_name} "--build-arg" "OSX_DEPLOYMENT_TARGET=${osx_version}"
 }
 
 read_targets ${base_image_name}

@@ -14,8 +14,6 @@ build_target() {
     local image_name=$1
     local target=$2
 
-    local image_name="${image_name}:linux-${target}-gcc"
-
     local distro=${target%%-*}
     target=${target#*-}
 
@@ -24,11 +22,9 @@ build_target() {
 
     local arch=${target}
 
-    if [ "${arch}" != "amd64" ]; then
-        distro="${arch}/${distro}"
-    fi
+    local image_name="${image_name}:linux-${distro}-${distro_tag}-${arch}-gcc"
 
-    build_linux $(dirname $0) ${distro} ${distro_tag} ${image_name}
+    build_linux ${arch} ${distro} ${distro_tag} ${image_name}
 }
 
 read_targets ${base_image_name}
