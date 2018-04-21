@@ -1,10 +1,12 @@
 CI =
 CI += ci-linux
 CI += ci-commit-checker
+CI += ci-osx
 
 RELEASE =
 RELEASE += release-linux-deb-gcc
 RELEASE += release-linux-generic-gcc
+RELEASE += release-osx
 
 .PHONY: all
 all: release ci

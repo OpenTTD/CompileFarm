@@ -20,7 +20,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
     \
     bzip2 \
+    ca-certificates \
     git \
+    gnupg2 \
     libc6-dev \
     libfile-fcntllock-perl \
     libfontconfig-dev \
@@ -31,8 +33,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     libxdg-basedir-dev \
     make \
     mercurial \
+    software-properties-common \
     subversion \
     tar \
+    wget \
     xz-utils \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*

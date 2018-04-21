@@ -11,4 +11,4 @@ base_image_name=$1
 . $(dirname $0)/../build-include.source
 
 image_name="${base_image_name}:commit-checker"
-build_linux $(dirname $0) ${DEFAULT_DISTRO} ${DEFAULT_DISTRO_TAG} ${image_name}
+build_linux "amd64" ${DEFAULT_DISTRO} ${DEFAULT_DISTRO_TAG} ${image_name}

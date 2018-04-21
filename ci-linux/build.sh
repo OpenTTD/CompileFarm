@@ -16,20 +16,13 @@ build_target() {
 
     local compiler=${target%-*}
     target=${target##*-}
-
-    local image_name="${image_name}:linux-${target}-${compiler}"
-
     local arch=${target}
+
+    local image_name="${image_name}:linux-${arch}-${compiler}"
 
     . $(dirname $0)/compilers/${compiler}.inc
 
-    local distro=${DISTRO}
-
-    if [ "${arch}" != "amd64" ]; then
-        distro="${arch}/${distro}"
-    fi
-
-    build_linux $(dirname $0) ${distro} ${DISTRO_TAG} ${image_name} "--build-arg" "EXTRA_PACKAGES=${EXTRA_PACKAGES}"
+    build_linux ${arch} ${DISTRO} ${DISTRO_TAG} ${image_name} "--build-arg" "EXTRA_PACKAGES=${EXTRA_PACKAGES}"
 }
 
 read_targets ${base_image_name}
