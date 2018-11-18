@@ -7,6 +7,7 @@ RELEASE =
 RELEASE += release-linux-deb-gcc
 RELEASE += release-linux-generic-gcc
 RELEASE += release-osx
+RELEASE += release-windows-bundle
 
 .PHONY: all
 all: release ci

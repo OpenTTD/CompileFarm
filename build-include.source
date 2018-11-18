@@ -63,6 +63,32 @@ base_osx() {
         $(dirname $0)/../base-osx
 }
 
+base_windows() {
+    local distro=$1
+    local distro_tag=$2
+    local arch=$3
+
+    # Debian has "slim" images, which are drastically smaller
+    local sdistro_tag=${distro_tag}
+    if [ "${distro}" = "debian" ] || [ "${distro}" = "i386/debian" ]; then
+        sdistro_tag="${distro_tag}-slim"
+    fi
+
+    local tdistro=$(sanitize_name ${distro})
+    local tdistro_tag=$(sanitize_name ${distro_tag})
+
+    # We do this to deduplicate large parts of Dockerfiles
+    echo ""
+    echo "Building docker Linux base image set up for cross-compilation for Windows (arch ${arch}) based on ${distro}:${distro_tag} .."
+    echo ""
+    docker build \
+        --build-arg DISTRO=${distro} \
+        --build-arg DISTRO_TAG=${sdistro_tag} \
+        --build-arg TARGET_ARCHITECTURE=${arch} \
+        -t openttd/base:${tdistro}-${tdistro_tag}-windows-cross-${arch} \
+        $(dirname $0)/../base-windows
+}
+
 build_image() {
     local distro=$1
     local distro_tag=$2
@@ -107,6 +133,17 @@ build_osx() {
     base_linux ${DEFAULT_DISTRO} ${DEFAULT_DISTRO_TAG}
     base_osx ${DEFAULT_DISTRO} ${DEFAULT_DISTRO_TAG} 10.13
     build_image "osx" ${distro_tag} ${image_name} "$@"
+}
+
+build_windows() {
+    local arch=$1
+    local distro=$2
+    local distro_tag=$3
+    local image_name=$4
+    shift 4
+
+    base_windows ${distro} ${distro_tag} ${arch}
+    build_image ${distro} ${distro_tag} ${image_name} --build-arg TARGET_ARCHITECTURE=${arch} "$@"
 }
 
 read_targets() {
