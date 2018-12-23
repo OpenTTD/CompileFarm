@@ -1,6 +1,7 @@
-ARG DISTRO=debian
-ARG DISTRO_TAG=stretch-slim
-FROM openttd/base:${DISTRO}-${DISTRO_TAG}
+ARG ARCH=amd64
+FROM openttd/base:linux-debian-stretch-${ARCH}
+
+ARG ARCH
 
 # Compiler used in this Docker
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
@@ -12,6 +13,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     && rm -rf /var/lib/apt/lists/*
 
 COPY files/run.sh /usr/bin/
+
+ENV ARCH=${ARCH}
 
 WORKDIR /workdir/source
 

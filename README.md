@@ -1,4 +1,4 @@
-# OpenTTD-cf
+# OpenTTD-CF
 
 A collection of Dockerfiles which are prepared to compile OpenTTD in all kind
 of flavours.
@@ -20,14 +20,14 @@ https://hub.docker.com/r/openttd/compile-farm-ci/
 
 They can simply be pulled like:
 
-```
+```bash
 docker pull openttd/compile-farm:linux-debian-stretch-amd64-gcc
 docker pull openttd/compile-farm-ci:linux-amd64-gcc
 ```
 
-If you want to build them yourself, simply run 'make' in the root directory.
-This will produce all the images. More specific targets are available; check
-the Makefile for more details.
+If you want to build them yourself, things get a bit more complicated. To
+avoid code duplication, best is to look in azure-pipelines.yml for the full
+set of what is being created.
 
 ## Running (releases)
 
@@ -38,7 +38,7 @@ folder, but mostly it will work inside the 'source' folder.
 
 Now run from your build folder:
 
-```
+```bash
 docker run --rm --user=`id -u`:`id -g` -v $(realpath $(pwd)):/workdir openttd/compile-farm:<your flavor>
 ```
 
@@ -52,20 +52,20 @@ The dockers marked 'ci' are meant for code validation and tests
 that the new code is correct. It follows the above chapter exactly, with a few
 key differences:
 
- - The image name is not 'openttd/compile-farm', but 'openttd/compile-farm-ci'.
- - When running the docker, it doesn't produce any output in bundles folder.
+- The image name is not 'openttd/compile-farm', but 'openttd/compile-farm-ci'.
+- When running the docker, it doesn't produce any output in bundles folder.
 
 ## Listing current images
 
 To list all the images you currently have on your system, simply run:
 
-```
+```bash
 docker images openttd/compile-farm --format "{{.Tag}}"
 ```
 
 Or for all the CI images:
 
-```
+```bash
 docker images openttd/compile-farm-ci --format "{{.Tag}}"
 ```
 
@@ -75,6 +75,7 @@ In this repository you see different folders, each for their own target.
 
 A short walkthrough:
 
- - ci-linux: targets that only validate sources on errors.
- - release-linux-deb-gcc: targets that produce .deb files (Debian and Ubuntu).
- - release-linux-generic-gcc: targets that produce tarballs (for any Linux OS, with GCC).
+- ci-commit-checker: scripts to validate commit / commit messages.
+- ci-linux-*: targets that only validate sources on errors.
+- release-linux-deb-gcc: targets that produce .deb files (Debian and Ubuntu).
+- release-linux-generic-gcc: targets that produce tarballs (for any Linux OS, build with GCC).

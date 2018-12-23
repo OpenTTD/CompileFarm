@@ -2,13 +2,11 @@
 
 set -e
 
-ARCH=`dpkg --print-architecture`
-
 echo ""
 echo "Validating source"
 echo "  OS: Linux"
-echo "  Compiler: $(cat /etc/compiler-packages)"
-echo "  Arch: ${ARCH}"
+echo "  Compiler: GCC 6"
+echo "  Arch: amd64"
 echo ""
 
 ./configure --prefix-dir=/usr
