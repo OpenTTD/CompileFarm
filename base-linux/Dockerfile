@@ -1,6 +1,6 @@
 ARG DISTRO=debian
-ARG DISTRO_TAG=stretch-slim
-FROM ${DISTRO}:${DISTRO_TAG}
+ARG RELEASE=stretch-slim
+FROM ${DISTRO}:${RELEASE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -11,9 +11,6 @@ LABEL \
     org.label-schema.url="https://www.openttd.org/" \
     org.label-schema.vcs-url="https://github.com/OpenTTD/OpenTTD-CF" \
     org.label-schema.vendor=OpenTTD
-
-# Blocks in this file are created as such that we have as many cache hits as
-# possible between different Dockerfiles
 
 # Dependencies needed to compile OpenTTD
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
@@ -41,7 +38,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Fox up some files so OpenTTD picks up the right files
+# Fix up some files so OpenTTD picks up the right files
 RUN cd /usr/lib/*-linux-gnu \
     && ln -s libiculx.a libsiculx.a \
     && ln -s libicule.a libsicule.a \

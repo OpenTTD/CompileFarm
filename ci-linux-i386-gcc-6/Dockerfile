@@ -1,32 +1,20 @@
-ARG DISTRO=debian
-ARG RELEASE=stretch
-ARG ARCH=amd64
-FROM openttd/base:linux-${DISTRO}-${RELEASE}-${ARCH}
+FROM openttd/base:linux-debian-stretch-i386
 
-ARG DISTRO
-ARG RELEASE
-ARG ARCH
-
-# Compiler used in this Docker
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
-    \
     binutils \
-    g++ \
-    gcc \
+    g++=4:6.* \
+    gcc=4:6.* \
     && rm -rf /var/lib/apt/lists/*
 
-# Dependencies needed to create deb files
+# Install openttd-opengfx, so we can easier run the regression tests
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    debhelper \
-    fakeroot \
+    openttd-opengfx \
     && rm -rf /var/lib/apt/lists/*
 
 COPY files/run.sh /usr/bin/
 
-ENV DISTRO=${DISTRO} RELEASE=${RELEASE} ARCH=${ARCH}
-
 WORKDIR /workdir/source
 
 ENTRYPOINT ["run.sh"]
-CMD ["dev"]
+CMD []

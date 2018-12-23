@@ -1,6 +1,4 @@
-ARG DISTRO=debian
-ARG DISTRO_TAG=stretch-slim
-FROM openttd/base:${DISTRO}-${DISTRO_TAG}
+FROM openttd/base:linux-debian-stretch-amd64
 
 # Dependencies for some commit checkers
 RUN apt-get update && apt-get install -y --no-install-recommends \

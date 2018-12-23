@@ -10,8 +10,6 @@ fi
 VERSION=$1
 BASENAME="openttd-${VERSION}"
 
-ARCH=`dpkg --print-architecture`
-
 echo ""
 echo "Creating .deb file"
 echo "  Source: ${BASENAME}"
