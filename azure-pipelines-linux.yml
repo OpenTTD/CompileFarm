@@ -1,0 +1,253 @@
+trigger:
+- master
+# Only run this pipeline on a Pull Request if anything but the
+# azure-pipeline-windows is modified; otherwise that pipeline can
+# handle it just fine.
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - azure-pipelines-windows.yml
+
+jobs:
+- job: BaseImages
+  displayName: 'Base image'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  strategy:
+    matrix:
+      linux-debian-jessie-i386:
+        Distro: i386/debian
+        Release: jessie-slim
+      linux-debian-jessie-amd64:
+        Distro: debian
+        Release: jessie-slim
+      linux-debian-stretch-i386:
+        Distro: i386/debian
+        Release: stretch-slim
+      linux-debian-stretch-amd64:
+        Distro: debian
+        Release: stretch-slim
+      linux-ubuntu-xenial-i386:
+        Distro: i386/ubuntu
+        Release: xenial
+      linux-ubuntu-xenial-amd64:
+        Distro: ubuntu
+        Release: xenial
+      linux-ubuntu-bionic-i386:
+        Distro: i386/ubuntu
+        Release: bionic
+      linux-ubuntu-bionic-amd64:
+        Distro: ubuntu
+        Release: bionic
+
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Docker@1
+    displayName: 'Build base image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      dockerFile: base-linux/Dockerfile
+      arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release)'
+      imageName: 'openttd/base:$(Agent.JobName)'
+      addDefaultLabels: false
+
+  # Publish the images via artifacts
+  # Explicitly we do not publish them via Docker Hub as that would mean the CI
+  # updates production images, which is a bad idea.
+  - script: |
+      mkdir base-images
+      docker save openttd/base:$(Agent.JobName) | gzip -c > base-$(Agent.JobName).tar.gz
+    displayName: 'Save base image'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish base image'
+    inputs:
+      PathtoPublish: base-$(Agent.JobName).tar.gz
+      ArtifactName: base-images
+
+
+- job: LinuxCI
+  dependsOn: BaseImages
+  displayName: 'Linux CI image'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  strategy:
+    matrix:
+      commit-checker:
+        Folder: ci-commit-checker
+      linux-amd64-clang-3.8:
+        Folder: ci-linux-amd64-clang-3.8
+      linux-amd64-gcc-6:
+        Folder: ci-linux-amd64-gcc-6
+      linux-i386-gcc-6:
+        Folder: ci-linux-i386-gcc-6
+
+  steps:
+  - checkout: self
+    submodules: true
+
+  # Get all the needed base images and load them
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download base images'
+    inputs:
+      downloadType: specific
+      itemPattern: |
+        base-images/base-linux-debian-stretch-i386.tar.gz
+        base-images/base-linux-debian-stretch-amd64.tar.gz
+      downloadPath: '$(System.ArtifactsDirectory)'
+  - script: |
+      for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
+    displayName: 'Load base images'
+
+  - task: Docker@1
+    displayName: 'Build image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      dockerFile: $(Folder)/Dockerfile
+      imageName: 'openttd/compile-farm-ci:$(Agent.JobName)'
+      addDefaultLabels: false
+
+  # Only publish when it triggered on 'master' (and not on a Pull Request)
+  - task: Docker@1
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: 'Publish image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      command: 'Push an image'
+      imageName: 'openttd/compile-farm-ci:$(Agent.JobName)'
+
+
+- job: LinuxDebRelease
+  dependsOn: BaseImages
+  displayName: 'Linux deb release images'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  strategy:
+    matrix:
+        linux-debian-jessie-i386-gcc:
+          Distro: debian
+          Release: jessie
+          Arch: i386
+        linux-debian-jessie-amd64-gcc:
+          Distro: debian
+          Release: jessie
+          Arch: amd64
+        linux-debian-stretch-i386-gcc:
+          Distro: debian
+          Release: stretch
+          Arch: i386
+        linux-debian-stretch-amd64-gcc:
+          Distro: debian
+          Release: stretch
+          Arch: amd64
+        linux-ubuntu-xenial-i386-gcc:
+          Distro: ubuntu
+          Release: xenial
+          Arch: i386
+        linux-ubuntu-xenial-amd64-gcc:
+          Distro: ubuntu
+          Release: xenial
+          Arch: amd64
+        linux-ubuntu-bionic-i386-gcc:
+          Distro: ubuntu
+          Release: bionic
+          Arch: i386
+        linux-ubuntu-bionic-amd64-gcc:
+          Distro: ubuntu
+          Release: bionic
+          Arch: amd64
+
+  steps:
+  - checkout: self
+    submodules: true
+
+  # Get all the needed base images and load them
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download base images'
+    inputs:
+      downloadType: specific
+      itemPattern: 'base-images/base-linux-$(Distro)-$(Release)-$(Arch).tar.gz'
+      downloadPath: '$(System.ArtifactsDirectory)'
+  - script: |
+      for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
+    displayName: 'Load base images'
+
+  - task: Docker@1
+    displayName: 'Build image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      dockerFile: release-linux-deb-gcc/Dockerfile
+      arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release) --build-arg ARCH=$(Arch)'
+      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      addDefaultLabels: false
+
+  # Only publish when it triggered on 'master' (and not on a Pull Request)
+  - task: Docker@1
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: 'Publish image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      command: 'Push an image'
+      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+
+
+- job: LinuxGenericRelease
+  dependsOn: BaseImages
+  displayName: 'Linux generic release images'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  strategy:
+    matrix:
+        linux-generic-i386-gcc:
+          Arch: i386
+        linux-generic-amd64-gcc:
+          Arch: amd64
+
+  steps:
+  - checkout: self
+    submodules: true
+
+  # Get all the needed base images and load them
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download base images'
+    inputs:
+      downloadType: specific
+      itemPattern: |
+        base-images/base-linux-debian-stretch-i386.tar.gz
+        base-images/base-linux-debian-stretch-amd64.tar.gz
+      downloadPath: '$(System.ArtifactsDirectory)'
+  - script: |
+      for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
+    displayName: 'Load base images'
+
+  - task: Docker@1
+    displayName: 'Build image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      dockerFile: release-linux-generic-gcc/Dockerfile
+      arguments: '--build-arg ARCH=$(Arch)'
+      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      addDefaultLabels: false
+
+  # Only publish when it triggered on 'master' (and not on a Pull Request)
+  - task: Docker@1
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: 'Publish image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      command: 'Push an image'
+      imageName: 'openttd/compile-farm:$(Agent.JobName)'

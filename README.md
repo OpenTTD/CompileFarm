@@ -1,5 +1,8 @@
 # OpenTTD-CF
 
+[![Build Status](https://dev.azure.com/openttd/OpenTTD/_apis/build/status/OpenTTD-CF%20Linux?branchName=master)](https://dev.azure.com/openttd/OpenTTD/_build/latest?definitionId=1?branchName=master)
+[![Build Status](https://dev.azure.com/openttd/OpenTTD/_apis/build/status/OpenTTD-CF%20Windows?branchName=master)](https://dev.azure.com/openttd/OpenTTD/_build/latest?definitionId=2?branchName=master)
+
 A collection of Dockerfiles which are prepared to compile OpenTTD in all kind
 of flavours.
 
@@ -26,8 +29,21 @@ docker pull openttd/compile-farm-ci:linux-amd64-gcc
 ```
 
 If you want to build them yourself, things get a bit more complicated. To
-avoid code duplication, best is to look in azure-pipelines.yml for the full
-set of what is being created.
+avoid code duplication, best is to look in azure-pipelines-linux.yml for the
+full set of what is being created.
+
+## Automated building
+
+This repository uses Azure Pipelines to create all the required images. When
+a Pull Request is made, it will validate that all Linux containers still
+build. If a Pull Request is merged in `master`, it will automatically publish
+the new Linux containers.
+
+Every week `master` is rebuild, both the Linux containers and the Windows
+dependencies.
+
+- `azure-pipelines-linux.yml` defines how the Linux Containers are build.
+- `azure-pipelines-windows.yml` defines how the Windows Dependencies are build.
 
 ## Running (releases)
 
@@ -75,7 +91,7 @@ In this repository you see different folders, each for their own target.
 
 A short walkthrough:
 
-- ci-commit-checker: scripts to validate commit / commit messages.
-- ci-linux-*: targets that only validate sources on errors.
-- release-linux-deb-gcc: targets that produce .deb files (Debian and Ubuntu).
-- release-linux-generic-gcc: targets that produce tarballs (for any Linux OS, build with GCC).
+- `ci-commit-checker`: scripts to validate commit / commit messages.
+- `ci-linux-*`: targets that only validate sources on errors.
+- `release-linux-deb-gcc`: targets that produce .deb files (Debian and Ubuntu).
+- `release-linux-generic-gcc`: targets that produce tarballs (for any Linux OS, build with GCC).
