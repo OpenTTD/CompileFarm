@@ -50,8 +50,6 @@ jobs:
   - task: Docker@1
     displayName: 'Build base image'
     inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       dockerFile: base-linux/Dockerfile
       arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release)'
       imageName: 'openttd/base:$(Agent.JobName)'
@@ -108,8 +106,6 @@ jobs:
   - task: Docker@1
     displayName: 'Build image'
     inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       dockerFile: $(Folder)/Dockerfile
       imageName: 'openttd/compile-farm-ci:$(Agent.JobName)'
       addDefaultLabels: false
@@ -184,8 +180,6 @@ jobs:
   - task: Docker@1
     displayName: 'Build image'
     inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       dockerFile: release-linux-deb-gcc/Dockerfile
       arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release) --build-arg ARCH=$(Arch)'
       imageName: 'openttd/compile-farm:$(Agent.JobName)'
@@ -235,8 +229,6 @@ jobs:
   - task: Docker@1
     displayName: 'Build image'
     inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       dockerFile: release-linux-generic-gcc/Dockerfile
       arguments: '--build-arg ARCH=$(Arch)'
       imageName: 'openttd/compile-farm:$(Agent.JobName)'
