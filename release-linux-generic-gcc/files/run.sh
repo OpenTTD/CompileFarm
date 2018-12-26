@@ -20,5 +20,5 @@ echo ""
 
 mkdir -p bundles
 ./configure --static-icu --without-xdg-basedir --prefix-dir=/usr
-make
+make -j2
 make bundle_gzip bundle_xz BUNDLE_NAME=${BASENAME}-linux-generic-${ARCH}

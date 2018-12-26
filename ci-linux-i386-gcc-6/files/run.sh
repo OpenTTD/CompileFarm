@@ -10,4 +10,4 @@ echo "  Arch: i386"
 echo ""
 
 ./configure --prefix-dir=/usr
-make test
+make -j2 test
