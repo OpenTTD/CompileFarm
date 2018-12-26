@@ -22,10 +22,10 @@ jobs:
       vcpkg\bootstrap-vcpkg.bat
     displayName: 'Install vcpkg'
   - script: |
-      vcpkg\vcpkg.exe install freetype:x64-windows-static fontconfig:x64-windows-static liblzma:x64-windows-static libpng:x64-windows-static lzo:x64-windows-static zlib:x64-windows-static
+      vcpkg\vcpkg.exe install freetype:x64-windows-static liblzma:x64-windows-static libpng:x64-windows-static lzo:x64-windows-static zlib:x64-windows-static
     displayName: 'Install x64 dependencies'
   - script: |
-      vcpkg\vcpkg.exe install freetype:x86-windows-static fontconfig:x86-windows-static liblzma:x86-windows-static libpng:x86-windows-static lzo:x86-windows-static zlib:x86-windows-static
+      vcpkg\vcpkg.exe install freetype:x86-windows-static liblzma:x86-windows-static libpng:x86-windows-static lzo:x86-windows-static zlib:x86-windows-static
     displayName: 'Install x86 dependencies'
   - script: |
       rmdir /s /q vcpkg\.git
