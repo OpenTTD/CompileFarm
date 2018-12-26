@@ -21,6 +21,6 @@ echo "  Arch: ${ARCH}"
 echo ""
 
 ln -sf os/debian debian && mkdir -p bundles
-fakeroot make -f debian/rules binary
+fakeroot make -j2 -f debian/rules binary
 mv ../*dbg*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}-dbg.deb
 mv ../*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}.deb
