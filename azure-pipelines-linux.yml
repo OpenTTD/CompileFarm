@@ -59,6 +59,7 @@ jobs:
   # Explicitly we do not publish them via Docker Hub as that would mean the CI
   # updates production images, which is a bad idea.
   - script: |
+      set -ex
       mkdir base-images
       docker save openttd/base:$(Agent.JobName) | gzip -c > base-$(Agent.JobName).tar.gz
     displayName: 'Save base image'
@@ -100,6 +101,7 @@ jobs:
         base-images/base-linux-debian-stretch-amd64.tar.gz
       downloadPath: '$(System.ArtifactsDirectory)'
   - script: |
+      set -ex
       for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
     displayName: 'Load base images'
 
@@ -174,6 +176,7 @@ jobs:
       itemPattern: 'base-images/base-linux-$(Distro)-$(Release)-$(Arch).tar.gz'
       downloadPath: '$(System.ArtifactsDirectory)'
   - script: |
+      set -ex
       for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
     displayName: 'Load base images'
 
@@ -223,6 +226,7 @@ jobs:
         base-images/base-linux-debian-stretch-amd64.tar.gz
       downloadPath: '$(System.ArtifactsDirectory)'
   - script: |
+      set -ex
       for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
     displayName: 'Load base images'
 
