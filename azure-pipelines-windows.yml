@@ -37,12 +37,18 @@ jobs:
       rmdir /s /q vcpkg\packages
       rmdir /s /q vcpkg\ports
       rmdir /s /q vcpkg\toolsrc
+      mv vcpkg windows-dependencies
     displayName: 'Remove unused files'
+  - task: ArchiveFiles@2
+    displayName: Archive
+    inputs:
+      rootFolderOrFile: 'windows-dependencies'
+      archiveFile: 'windows-dependencies.zip'
 
   # Only publish when it triggered on 'master' (and not on a Pull Request)
   - task: PublishBuildArtifacts@1
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     displayName: Publish
     inputs:
-      PathtoPublish: vcpkg
+      PathtoPublish: windows-dependencies.zip
       ArtifactName: 'windows-dependencies'
