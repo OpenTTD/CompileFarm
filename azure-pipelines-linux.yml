@@ -247,3 +247,44 @@ jobs:
       dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       command: 'Push an image'
       imageName: 'openttd/compile-farm:$(Agent.JobName)'
+
+
+- job: Docs
+  dependsOn: BaseImages
+  displayName: 'Docs image'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  steps:
+  - checkout: self
+    submodules: true
+
+  # Get all the needed base images and load them
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download base images'
+    inputs:
+      downloadType: specific
+      itemPattern: |
+        base-images/base-linux-debian-stretch-amd64.tar.gz
+      downloadPath: '$(System.ArtifactsDirectory)'
+  - script: |
+      set -ex
+      for i in $(System.ArtifactsDirectory)/base-images/*.tar.gz; do gunzip -c $i | docker load; done
+    displayName: 'Load base images'
+
+  - task: Docker@1
+    displayName: 'Build image'
+    inputs:
+      dockerFile: release-docs/Dockerfile
+      imageName: 'openttd/compile-farm:docs'
+      addDefaultLabels: false
+
+  # Only publish when it triggered on 'master' (and not on a Pull Request)
+  - task: Docker@1
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: 'Publish image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'OpenTTD Docker Hub'
+      command: 'Push an image'
+      imageName: 'openttd/compile-farm:docs'
