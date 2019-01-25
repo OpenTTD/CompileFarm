@@ -24,11 +24,11 @@ doxygen
     doxygen Doxyfile_Game
 )
 
-mv docs/source ${BASENAME}-docs-source
+mv docs/source ${BASENAME}-docs
 mv docs/aidocs ${BASENAME}-docs-ai
 mv docs/gamedocs ${BASENAME}-docs-gs
 
 mkdir -p bundles
-tar --xz -cf bundles/${BASENAME}-docs-source.tar.xz ${BASENAME}-docs-source
+tar --xz -cf bundles/${BASENAME}-docs.tar.xz ${BASENAME}-docs
 tar --xz -cf bundles/${BASENAME}-docs-ai.tar.xz ${BASENAME}-docs-ai
 tar --xz -cf bundles/${BASENAME}-docs-gs.tar.xz ${BASENAME}-docs-gs
