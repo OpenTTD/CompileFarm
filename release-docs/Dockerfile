@@ -5,6 +5,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
     \
     doxygen \
+    gawk \
     && rm -rf /var/lib/apt/lists/*
 
 COPY files/run.sh /usr/bin/
