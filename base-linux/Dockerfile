@@ -27,6 +27,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     liblzma-dev \
     liblzo2-dev \
     libsdl1.2-dev \
+    libsdl2-dev \
     libxdg-basedir-dev \
     make \
     mercurial \
