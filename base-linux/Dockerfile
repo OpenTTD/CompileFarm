@@ -30,9 +30,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     libsdl2-dev \
     libxdg-basedir-dev \
     make \
-    mercurial \
     software-properties-common \
-    subversion \
     tar \
     wget \
     xz-utils \
