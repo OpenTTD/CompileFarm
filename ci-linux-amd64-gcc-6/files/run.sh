@@ -17,4 +17,4 @@ else
     ./configure --prefix-dir=/usr
 fi
 
-make -j2 test
+make -j2 all test
