@@ -18,6 +18,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     \
     bzip2 \
     ca-certificates \
+    cmake \
     git \
     gnupg2 \
     libc6-dev \

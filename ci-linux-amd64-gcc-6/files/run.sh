@@ -9,5 +9,12 @@ echo "  Compiler: GCC 6"
 echo "  Arch: amd64"
 echo ""
 
-./configure --prefix-dir=/usr
+if [ -e "CMakeLists.txt" ]; then
+    mkdir build
+    cd build
+    cmake ..
+else
+    ./configure --prefix-dir=/usr
+fi
+
 make -j2 test
