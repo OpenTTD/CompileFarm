@@ -6,8 +6,12 @@ echo ""
 echo "Validating commits"
 echo ""
 
-is-on-top-of-master.sh
-echo "Branch is on top of master"
+if [ -z "${TARGET_BRANCH}" ]; then
+	TARGET_BRANCH=master
+fi
 
-HOOKS_DIR=/git-hooks GIT_DIR=.git /git-hooks/check-commits.sh origin/master..HEAD
+is-on-top-of-master.sh
+echo "Branch is on top of ${TARGET_BRANCH}"
+
+HOOKS_DIR=/git-hooks GIT_DIR=.git /git-hooks/check-commits.sh origin/${TARGET_BRANCH}..HEAD
 echo "Commit checks passed"
