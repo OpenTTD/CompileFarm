@@ -17,27 +17,27 @@ jobs:
     vmImage: 'VS2017-Win2016'
 
   steps:
-  - script: |
-      git clone https://github.com/Microsoft/vcpkg.git
-      vcpkg\bootstrap-vcpkg.bat
-    displayName: 'Install vcpkg'
-  - script: |
-      vcpkg\vcpkg.exe install freetype:x64-windows-static liblzma:x64-windows-static libpng:x64-windows-static lzo:x64-windows-static zlib:x64-windows-static
+  - bash: |
+      set -ex
+
+      cd /c/vcpkg
+      git pull
+    displayName: 'Update vcpkg'
+  - script: vcpkg.exe install freetype:x64-windows-static liblzma:x64-windows-static libpng:x64-windows-static lzo:x64-windows-static zlib:x64-windows-static
     displayName: 'Install x64 dependencies'
-  - script: |
-      vcpkg\vcpkg.exe install freetype:x86-windows-static liblzma:x86-windows-static libpng:x86-windows-static lzo:x86-windows-static zlib:x86-windows-static
+  - script: vcpkg.exe install freetype:x86-windows-static liblzma:x86-windows-static libpng:x86-windows-static lzo:x86-windows-static zlib:x86-windows-static
     displayName: 'Install x86 dependencies'
-  - script: |
-      rmdir /s /q vcpkg\.git
-      rmdir /q vcpkg\.gitattributes
-      rmdir /q vcpkg\.gitignore
-      rmdir /s /q vcpkg\buildtrees
-      rmdir /s /q vcpkg\docs
-      rmdir /s /q vcpkg\downloads
-      rmdir /s /q vcpkg\packages
-      rmdir /s /q vcpkg\ports
-      rmdir /s /q vcpkg\toolsrc
-      mv vcpkg windows-dependencies
+  - bash: |
+      set -ex
+
+      rm -rf /c/vcpkg/.git*
+      rm -rf /c/vcpkg/buildtrees
+      rm -rf /c/vcpkg/docs
+      rm -rf /c/vcpkg/downloads
+      rm -rf /c/vcpkg/packages
+      rm -rf /c/vcpkg/ports
+      rm -rf /c/vcpkg/toolsrc
+      mv /c/vcpkg windows-dependencies
     displayName: 'Remove unused files'
   - task: ArchiveFiles@2
     displayName: Archive
