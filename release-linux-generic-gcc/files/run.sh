@@ -18,7 +18,14 @@ echo "  Compiler: GCC"
 echo "  Arch: ${ARCH}"
 echo ""
 
-mkdir -p bundles
-./configure --static-icu --without-xdg-basedir --prefix-dir=/usr
-make -j2
-make bundle_gzip bundle_xz BUNDLE_NAME=${BASENAME}-linux-generic-${ARCH}
+if [ -e "CMakeLists.txt" ]; then
+    mkdir build
+    cd build
+    cmake ..
+    make -j2 package
+else
+    mkdir -p bundles
+    ./configure --static-icu --without-xdg-basedir --prefix-dir=/usr
+    make -j2
+    make bundle_gzip bundle_xz BUNDLE_NAME=${BASENAME}-linux-generic-${ARCH}
+fi
