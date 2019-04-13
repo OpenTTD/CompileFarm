@@ -31,11 +31,12 @@ mv docs/gamedocs ${BASENAME}-docs-gs
 # To be consistent with other docker, put the result in the build folder
 # when CMake is used.
 if [ -e "CMakeLists.txt" ]; then
-    mkdir -p build
-    cd build
+    BUNDLES_DIRECTORY=build/bundles
+else
+    BUNDLES_DIRECTORY=bundles
 fi
 
-mkdir -p bundles
-tar --xz -cf bundles/${BASENAME}-docs.tar.xz ${BASENAME}-docs
-tar --xz -cf bundles/${BASENAME}-docs-ai.tar.xz ${BASENAME}-docs-ai
-tar --xz -cf bundles/${BASENAME}-docs-gs.tar.xz ${BASENAME}-docs-gs
+mkdir -p ${BUNDLES_DIRECTORY}
+tar --xz -cf ${BUNDLES_DIRECTORY}/${BASENAME}-docs.tar.xz ${BASENAME}-docs
+tar --xz -cf ${BUNDLES_DIRECTORY}/${BASENAME}-docs-ai.tar.xz ${BASENAME}-docs-ai
+tar --xz -cf ${BUNDLES_DIRECTORY}/${BASENAME}-docs-gs.tar.xz ${BASENAME}-docs-gs
