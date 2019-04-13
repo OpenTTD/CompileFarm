@@ -28,6 +28,13 @@ mv docs/source ${BASENAME}-docs
 mv docs/aidocs ${BASENAME}-docs-ai
 mv docs/gamedocs ${BASENAME}-docs-gs
 
+# To be consistent with other docker, put the result in the build folder
+# when CMake is used.
+if [ -e "CMakeLists.txt" ]; then
+    mkdir -p build
+    cd build
+fi
+
 mkdir -p bundles
 tar --xz -cf bundles/${BASENAME}-docs.tar.xz ${BASENAME}-docs
 tar --xz -cf bundles/${BASENAME}-docs-ai.tar.xz ${BASENAME}-docs-ai
