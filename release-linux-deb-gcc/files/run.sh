@@ -20,7 +20,15 @@ echo "  Release: ${RELEASE}"
 echo "  Arch: ${ARCH}"
 echo ""
 
-ln -sf os/debian debian && mkdir -p bundles
-fakeroot make -j2 -f debian/rules binary
-mv ../*dbg*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}-dbg.deb
-mv ../*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}.deb
+if [ -e "CMakeLists.txt" ]; then
+    mkdir build
+    cd build
+    cmake ..
+    make -j2 package
+    mv bundles/*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}.deb
+else
+    ln -sf os/debian debian && mkdir -p bundles
+    fakeroot make -j2 -f debian/rules binary
+    mv ../*dbg*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}-dbg.deb
+    mv ../*.deb bundles/${BASENAME}-linux-${DISTRO}-${RELEASE}-${ARCH}.deb
+fi

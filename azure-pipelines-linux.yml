@@ -19,12 +19,6 @@ jobs:
 
   strategy:
     matrix:
-      linux-debian-jessie-i386:
-        Distro: i386/debian
-        Release: jessie-slim
-      linux-debian-jessie-amd64:
-        Distro: debian
-        Release: jessie-slim
       linux-debian-stretch-i386:
         Distro: i386/debian
         Release: stretch-slim
@@ -131,14 +125,6 @@ jobs:
 
   strategy:
     matrix:
-        linux-debian-jessie-i386-gcc:
-          Distro: debian
-          Release: jessie
-          Arch: i386
-        linux-debian-jessie-amd64-gcc:
-          Distro: debian
-          Release: jessie
-          Arch: amd64
         linux-debian-stretch-i386-gcc:
           Distro: debian
           Release: stretch
