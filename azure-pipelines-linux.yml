@@ -22,21 +22,27 @@ jobs:
       linux-debian-stretch-i386:
         Distro: i386/debian
         Release: stretch-slim
+        Tag: linux-debian-stretch-i386
       linux-debian-stretch-amd64:
         Distro: debian
         Release: stretch-slim
+        Tag: linux-debian-stretch-amd64
       linux-ubuntu-xenial-i386:
         Distro: i386/ubuntu
         Release: xenial
+        Tag: linux-ubuntu-xenial-i386
       linux-ubuntu-xenial-amd64:
         Distro: ubuntu
         Release: xenial
+        Tag: linux-ubuntu-xenial-amd64
       linux-ubuntu-bionic-i386:
         Distro: i386/ubuntu
         Release: bionic
+        Tag: linux-ubuntu-bionic-i386
       linux-ubuntu-bionic-amd64:
         Distro: ubuntu
         Release: bionic
+        Tag: linux-ubuntu-bionic-amd64
 
   steps:
   - checkout: self
@@ -46,7 +52,7 @@ jobs:
     inputs:
       dockerFile: base-linux/Dockerfile
       arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release)'
-      imageName: 'openttd/base:$(Agent.JobName)'
+      imageName: 'openttd/base:$(Tag)'
       addDefaultLabels: false
 
   # Publish the images via artifacts
@@ -55,12 +61,12 @@ jobs:
   - script: |
       set -ex
       mkdir base-images
-      docker save openttd/base:$(Agent.JobName) | gzip -c > base-$(Agent.JobName).tar.gz
+      docker save openttd/base:$(Tag) | gzip -c > base-$(Tag).tar.gz
     displayName: 'Save base image'
   - task: PublishBuildArtifacts@1
     displayName: 'Publish base image'
     inputs:
-      PathtoPublish: base-$(Agent.JobName).tar.gz
+      PathtoPublish: base-$(Tag).tar.gz
       ArtifactName: base-images
 
 
@@ -74,12 +80,16 @@ jobs:
     matrix:
       commit-checker:
         Folder: ci-commit-checker
+        Tag: commit-checker
       linux-amd64-clang-3.8:
         Folder: ci-linux-amd64-clang-3.8
+        Tag: linux-amd64-clang-3.8
       linux-amd64-gcc-6:
         Folder: ci-linux-amd64-gcc-6
+        Tag: linux-amd64-gcc-6
       linux-i386-gcc-6:
         Folder: ci-linux-i386-gcc-6
+        Tag: linux-i386-gcc-6
 
   steps:
   - checkout: self
@@ -103,7 +113,7 @@ jobs:
     displayName: 'Build image'
     inputs:
       dockerFile: $(Folder)/Dockerfile
-      imageName: 'openttd/compile-farm-ci:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm-ci:$(Tag)'
       addDefaultLabels: false
 
   # Only publish when it triggered on 'master' (and not on a Pull Request)
@@ -114,7 +124,7 @@ jobs:
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       command: 'Push an image'
-      imageName: 'openttd/compile-farm-ci:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm-ci:$(Tag)'
 
 
 - job: LinuxDebRelease
@@ -129,26 +139,32 @@ jobs:
           Distro: debian
           Release: stretch
           Arch: i386
+          Tag: linux-debian-stretch-i386-gcc
         linux-debian-stretch-amd64-gcc:
           Distro: debian
           Release: stretch
           Arch: amd64
+          Tag: linux-debian-stretch-amd64-gcc
         linux-ubuntu-xenial-i386-gcc:
           Distro: ubuntu
           Release: xenial
           Arch: i386
+          Tag: linux-ubuntu-xenial-i386-gcc
         linux-ubuntu-xenial-amd64-gcc:
           Distro: ubuntu
           Release: xenial
           Arch: amd64
+          Tag: linux-ubuntu-xenial-amd64-gcc
         linux-ubuntu-bionic-i386-gcc:
           Distro: ubuntu
           Release: bionic
           Arch: i386
+          Tag: linux-ubuntu-bionic-i386-gcc
         linux-ubuntu-bionic-amd64-gcc:
           Distro: ubuntu
           Release: bionic
           Arch: amd64
+          Tag: linux-ubuntu-bionic-amd64-gcc
 
   steps:
   - checkout: self
@@ -171,7 +187,7 @@ jobs:
     inputs:
       dockerFile: release-linux-deb-gcc/Dockerfile
       arguments: '--build-arg DISTRO=$(Distro) --build-arg RELEASE=$(Release) --build-arg ARCH=$(Arch)'
-      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm:$(Tag)'
       addDefaultLabels: false
 
   # Only publish when it triggered on 'master' (and not on a Pull Request)
@@ -182,7 +198,7 @@ jobs:
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       command: 'Push an image'
-      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm:$(Tag)'
 
 
 - job: LinuxGenericRelease
@@ -195,8 +211,10 @@ jobs:
     matrix:
         linux-generic-i386-gcc:
           Arch: i386
+          Tag: linux-generic-i386-gcc
         linux-generic-amd64-gcc:
           Arch: amd64
+          Tag: linux-generic-amd64-gcc
 
   steps:
   - checkout: self
@@ -221,7 +239,7 @@ jobs:
     inputs:
       dockerFile: release-linux-generic-gcc/Dockerfile
       arguments: '--build-arg ARCH=$(Arch)'
-      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm:$(Tag)'
       addDefaultLabels: false
 
   # Only publish when it triggered on 'master' (and not on a Pull Request)
@@ -232,7 +250,7 @@ jobs:
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: 'OpenTTD Docker Hub'
       command: 'Push an image'
-      imageName: 'openttd/compile-farm:$(Agent.JobName)'
+      imageName: 'openttd/compile-farm:$(Tag)'
 
 
 - job: Docs
