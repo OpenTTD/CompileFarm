@@ -84,6 +84,9 @@ jobs:
       linux-amd64-clang-3.8:
         Folder: ci-linux-amd64-clang-3.8
         Tag: linux-amd64-clang-3.8
+      linux-amd64-clang-3.9:
+        Folder: ci-linux-amd64-clang-3.9
+        Tag: linux-amd64-clang-3.9
       linux-amd64-gcc-6:
         Folder: ci-linux-amd64-gcc-6
         Tag: linux-amd64-gcc-6
