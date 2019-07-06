@@ -17,11 +17,10 @@ jobs:
     vmImage: 'VS2017-Win2016'
 
   steps:
-  - bash: |
-      set -ex
-
-      cd /c/vcpkg
+  - script: |
+      cd /d c:\vcpkg
       git pull
+      .\bootstrap-vcpkg.bat
     displayName: 'Update vcpkg'
   - script: vcpkg.exe install freetype:x64-windows-static liblzma:x64-windows-static libpng:x64-windows-static lzo:x64-windows-static zlib:x64-windows-static
     displayName: 'Install x64 dependencies'
