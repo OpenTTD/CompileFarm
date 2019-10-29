@@ -156,6 +156,16 @@ jobs:
           Release: stretch
           Arch: amd64
           Tag: linux-debian-stretch-amd64-gcc
+        linux-debian-buster-i386-gcc:
+          Distro: debian
+          Release: buster
+          Arch: i386
+          Tag: linux-debian-buster-i386-gcc
+        linux-debian-buster-amd64-gcc:
+          Distro: debian
+          Release: buster
+          Arch: amd64
+          Tag: linux-debian-buster-amd64-gcc
         linux-ubuntu-xenial-i386-gcc:
           Distro: ubuntu
           Release: xenial
