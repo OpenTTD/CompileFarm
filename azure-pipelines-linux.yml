@@ -27,6 +27,14 @@ jobs:
         Distro: debian
         Release: stretch-slim
         Tag: linux-debian-stretch-amd64
+      linux-debian-buster-i386:
+        Distro: i386/debian
+        Release: buster-slim
+        Tag: linux-debian-buster-i386
+      linux-debian-buster-amd64:
+        Distro: debian
+        Release: buster-slim
+        Tag: linux-debian-buster-amd64
       linux-ubuntu-xenial-i386:
         Distro: i386/ubuntu
         Release: xenial
