@@ -16,12 +16,12 @@ echo "  Source: ${BASENAME}"
 echo ""
 
 mkdir -p objs
-doxygen
+VERSION=${VERSION} doxygen
 
 (
     cd src/script/api
-    doxygen Doxyfile_AI
-    doxygen Doxyfile_Game
+    VERSION=${VERSION} doxygen Doxyfile_AI
+    VERSION=${VERSION} doxygen Doxyfile_Game
 )
 
 mv docs/source ${BASENAME}-docs
