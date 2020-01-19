@@ -24,6 +24,11 @@ VERSION=${VERSION} doxygen
     VERSION=${VERSION} doxygen Doxyfile_Game
 )
 
+# Fixing a bug in a Debian patch on Doxygen
+# https://bugs.launchpad.net/ubuntu/+source/doxygen/+bug/1631169
+cp docs/source/html/dynsections.js docs/aidocs/html/
+cp docs/source/html/dynsections.js docs/gamedocs/html/
+
 mv docs/source ${BASENAME}-docs
 mv docs/aidocs ${BASENAME}-docs-ai
 mv docs/gamedocs ${BASENAME}-docs-gs
