@@ -51,6 +51,11 @@ jobs:
         Distro: ubuntu
         Release: bionic
         Tag: linux-ubuntu-bionic-amd64
+      # Focal does not have i386 architecture
+      linux-ubuntu-focal-amd64:
+        Distro: ubuntu
+        Release: focal
+        Tag: linux-ubuntu-focal-amd64
 
   steps:
   - checkout: self
@@ -186,6 +191,12 @@ jobs:
           Release: bionic
           Arch: amd64
           Tag: linux-ubuntu-bionic-amd64-gcc
+        # Focal does not have i386 architecture
+        linux-ubuntu-focal-amd64-gcc:
+          Distro: ubuntu
+          Release: focal
+          Arch: amd64
+          Tag: linux-ubuntu-focal-amd64-gcc
 
   steps:
   - checkout: self
