@@ -18,10 +18,20 @@ echo ""
 mkdir -p objs
 VERSION=${VERSION} doxygen
 
+if [ -e "CMakeLists.txt" ]; then
+    (
+        mkdir build
+        cd build
+        cmake ..
+        make script_window || true
+    )
+    GENERATED_API_DIR=$(pwd)/build/generated/script/api
+fi
+
 (
     cd src/script/api
-    VERSION=${VERSION} doxygen Doxyfile_AI
-    VERSION=${VERSION} doxygen Doxyfile_Game
+    VERSION=${VERSION} GENERATED_API_DIR=${GENERATED_API_DIR} doxygen Doxyfile_AI
+    VERSION=${VERSION} GENERATED_API_DIR=${GENERATED_API_DIR} doxygen Doxyfile_Game
 )
 
 # Fixing a bug in a Debian patch on Doxygen
