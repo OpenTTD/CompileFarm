@@ -4,7 +4,7 @@ FROM openttd/base:linux-debian-stretch-amd64
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
     \
-    clang-3.9=1:3.9* \
+    clang \
     doxygen \
     gawk \
     && rm -rf /var/lib/apt/lists/*
