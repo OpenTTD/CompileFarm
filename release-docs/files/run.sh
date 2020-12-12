@@ -15,24 +15,25 @@ echo "Creating docs"
 echo "  Source: ${BASENAME}"
 echo ""
 
-mkdir -p objs
-VERSION=${VERSION} doxygen
-
 if [ -e "CMakeLists.txt" ]; then
     (
         mkdir build
         cd build
         cmake ..
-        make script_window || true
+        make docs || true
     )
-    GENERATED_API_DIR=$(pwd)/build/generated/script/api
+    mv build/docs/source docs/source
+    mv build/docs/ai-api docs/aidocs
+    mv build/docs/gs-api docs/gamedocs
+else
+    mkdir -p objs
+    VERSION=${VERSION} doxygen
+    (
+        cd src/script/api
+        VERSION=${VERSION} doxygen Doxyfile_AI
+        VERSION=${VERSION} doxygen Doxyfile_Game
+    )
 fi
-
-(
-    cd src/script/api
-    VERSION=${VERSION} GENERATED_API_DIR=${GENERATED_API_DIR} doxygen Doxyfile_AI
-    VERSION=${VERSION} GENERATED_API_DIR=${GENERATED_API_DIR} doxygen Doxyfile_Game
-)
 
 # Fixing a bug in a Debian patch on Doxygen
 # https://bugs.launchpad.net/ubuntu/+source/doxygen/+bug/1631169
